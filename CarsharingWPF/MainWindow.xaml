@@ -9,6 +9,7 @@
     <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -24,8 +25,35 @@
                        Margin="0,4,0,0"/>
         </StackPanel>
 
-        <DataGrid Grid.Row="1"
-                  ItemsSource="{Binding CarsList}"
+        <Grid Grid.Row="1" Margin="0,0,0,15">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="220"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0">
+                <TextBlock Text="Пошук"
+                           Margin="0,0,0,4"/>
+
+                <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                         Height="32"
+                         Padding="8,4"/>
+            </StackPanel>
+
+            <StackPanel Grid.Column="2">
+                <TextBlock Text="Доступність"
+                           Margin="0,0,0,4"/>
+
+                <ComboBox ItemsSource="{Binding AvailabilityFilters}"
+                          SelectedItem="{Binding SelectedAvailabilityFilter}"
+                          Height="32"
+                          Padding="6,3"/>
+            </StackPanel>
+        </Grid>
+        
+        <DataGrid Grid.Row="2"
+                  ItemsSource="{Binding CarsView}"
                   SelectedItem="{Binding SelectedCar, Mode=TwoWay}"
                   AutoGenerateColumns="False"
                   IsReadOnly="True"
@@ -45,7 +73,7 @@
             </DataGrid.Columns>
         </DataGrid>
 
-        <Border Grid.Row="2"
+        <Border Grid.Row="3"
                 BorderBrush="LightGray"
                 BorderThickness="1"
                 CornerRadius="6"
@@ -110,7 +138,7 @@
             </Grid>
         </Border>
 
-        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
+        <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Content="Очистити"
                     Command="{Binding ClearCommand}"
                     Width="110" Height="36"

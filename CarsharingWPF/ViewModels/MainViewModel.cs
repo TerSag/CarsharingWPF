@@ -1,6 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Windows.Data;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -13,6 +14,7 @@ namespace CarsharingWPF.ViewModels
     public class MainViewModel : INotifyPropertyChanged
     {
         public ObservableCollection<Car> CarsList { get; } = new();
+        public ICollectionView CarsView { get; }
 
         private Car? _selectedCar;
         private string _brand = string.Empty;
@@ -21,6 +23,51 @@ namespace CarsharingWPF.ViewModels
         private string _licensePlate = string.Empty;
         private string _pricePerHour = string.Empty;
         private bool _isAvailable = true;
+
+        private string _searchText = string.Empty;
+        private string _selectedAvailabilityFilter = "All";
+
+
+        public ObservableCollection<string> AvailabilityFilters { get; } = new()
+            {
+            "All",
+            "Available",
+            "Not Available"
+        };
+
+        public string SearchText
+        {
+            get => _searchText;
+            set
+            {
+                if (_searchText == value)
+                    return;
+
+                _searchText = value;
+                OnPropertyChanged();
+
+                CarsView.Refresh();
+            }
+        }
+
+        public string SelectedAvailabilityFilter
+        {
+            get => _selectedAvailabilityFilter;
+            set
+            {
+                if (_selectedAvailabilityFilter == value)
+                    return;
+
+                _selectedAvailabilityFilter = value;
+                OnPropertyChanged();
+
+                CarsView.Refresh();
+            }
+        } 
+
+
+
+
 
         public Car? SelectedCar
         {
@@ -88,7 +135,37 @@ namespace CarsharingWPF.ViewModels
             DeleteCommand = new RelayCommand(_ => DeleteCar(), _ => SelectedCar != null);
             ClearCommand = new RelayCommand(_ => ClearForm());
 
+            CarsView = CollectionViewSource.GetDefaultView(CarsList);
+            CarsView.Filter = FilterCar;
+
             LoadData();
+        }
+
+        private bool FilterCar(object item)
+        {
+            if (item is not Car car)
+                return false;
+
+            bool matchesSearch = true;
+
+            if (!string.IsNullOrWhiteSpace(SearchText))
+            {
+                string search = SearchText.Trim();
+
+                matchesSearch =
+                    car.Brand.Contains(search, StringComparison.OrdinalIgnoreCase) ||
+                    car.Model.Contains(search, StringComparison.OrdinalIgnoreCase) ||
+                    car.LicensePlate.Contains(search, StringComparison.OrdinalIgnoreCase);
+            }
+
+            bool matchesAvailability = SelectedAvailabilityFilter switch
+            {
+                "Available" => car.IsAvailable,
+                "Not Available" => !car.IsAvailable,
+                _ => true
+            };
+
+            return matchesSearch && matchesAvailability;
         }
 
         private void LoadData()
