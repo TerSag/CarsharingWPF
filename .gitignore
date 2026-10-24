@@ -1,0 +1,22 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# Build
+bin/
+obj/
+
+# .NET build files
+*.dll
+*.exe
+*.pdb
+
+# SQLite runtime database
+carsharing.db
+*.db-shm
+*.db-wal
+
+# Temporary files
+*.tmp
+*.log
