@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace CarsharingWPF.Models
 {
     public class Client
@@ -7,5 +9,9 @@ namespace CarsharingWPF.Models
         public string LastName { get; set; } = string.Empty;
         public string Phone { get; set; } = string.Empty;
         public string DriverLicense { get; set; } = string.Empty;
+
+        [NotMapped]
+        public string FullName => $"{FirstName} {LastName}";
+
     }
 }

@@ -15,6 +15,7 @@ namespace CarsharingWPF.ViewModels
     {
         public ObservableCollection<Car> CarsList { get; } = new();
         public ICollectionView CarsView { get; }
+        public ObservableCollection<Client> ClientsList { get; } = new();
 
         private Car? _selectedCar;
         private string _brand = string.Empty;
@@ -207,8 +208,25 @@ namespace CarsharingWPF.ViewModels
             }
 
             CarsList.Clear();
-            foreach (var car in context.Cars.OrderBy(c => c.Brand).ThenBy(c => c.Model).ToList())
+            foreach (var car in context.Cars.
+                OrderBy(c => c.Brand).
+                ThenBy(c => c.Model).
+                ToList())
+            {
                 CarsList.Add(car);
+            }
+            
+            ClientsList.Clear();
+
+            foreach (var client in context.Clients
+                .OrderBy(c => c.LastName)
+                .ThenBy(c => c.FirstName)
+                .ToList())
+            {
+                ClientsList.Add(client);
+            }
+
+
         }
 
         private void AddCar()
