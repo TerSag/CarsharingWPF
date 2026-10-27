@@ -11,5 +11,16 @@ namespace CarsharingWPF
 
             this.DataContext = new MainViewModel();
         }
+
+        private void OpenClients_Click(object sender, RoutedEventArgs e)
+        {
+            var clientsWindow = new ClientsWindow
+            {
+                Owner = this
+            };
+
+            clientsWindow.ShowDialog();
+        }
+
     }
 }
