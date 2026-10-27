@@ -22,5 +22,20 @@ namespace CarsharingWPF
             clientsWindow.ShowDialog();
         }
 
+        private void OpenRentals_Click(object sender, RoutedEventArgs e)
+        {
+            var rentalsWindow = new RentalsWindow
+            {
+                Owner = this
+            };
+
+            rentalsWindow.ShowDialog();
+
+            if (DataContext is MainViewModel viewModel)
+            {
+                viewModel.RefreshData();
+            }
+        }
+
     }
 }

@@ -142,6 +142,11 @@ namespace CarsharingWPF.ViewModels
             LoadData();
         }
 
+        public void RefreshData()
+        {
+            LoadData();
+            CarsView.Refresh();
+        }
         private bool FilterCar(object item)
         {
             if (item is not Car car)
