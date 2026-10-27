@@ -8,6 +8,8 @@ using System.Windows.Input;
 using CarsharingWPF.Data;
 using CarsharingWPF.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Windows.Data;
+
 
 namespace CarsharingWPF.ViewModels
 {
@@ -15,6 +17,7 @@ namespace CarsharingWPF.ViewModels
     {
         public ObservableCollection<Rental> RentalsList { get; } = new();
 
+        public ICollectionView RentalsView { get; }
         public ObservableCollection<Client> ClientsList { get; } = new();
 
         public ObservableCollection<Car> AvailableCarsList { get; } = new();
@@ -23,7 +26,29 @@ namespace CarsharingWPF.ViewModels
         private Car? _selectedCar;
 
         private Rental? _selectedRental;
+        public ObservableCollection<string> RentalFilters { get; } = new()
+{
+            "Усі",
+            "Активні",
+            "Завершені"
+};
 
+        public string SelectedRentalFilter
+        {
+            get => _selectedRentalFilter;
+            set
+            {
+                if (_selectedRentalFilter == value)
+                    return;
+
+                _selectedRentalFilter = value;
+                OnPropertyChanged();
+
+                RentalsView.Refresh();
+            }
+        }
+
+        private string _selectedRentalFilter = "Усі";
         public Client? SelectedClient
         {
             get => _selectedClient;
@@ -61,6 +86,7 @@ namespace CarsharingWPF.ViewModels
         }
         public ICommand StartRentalCommand { get; }
         public ICommand EndRentalCommand { get; }
+        public ICommand ClearHistoryCommand { get; }
 
 
         public RentalsViewModel()
@@ -73,9 +99,29 @@ namespace CarsharingWPF.ViewModels
                 _ => EndRental(),
                 _ => SelectedRental != null && SelectedRental.IsActive);
 
+            ClearHistoryCommand = new RentalRelayCommand(
+      _           => ClearHistory(),
+      _           => RentalsList.Any(r => !r.IsActive));
+
+            RentalsView = CollectionViewSource.GetDefaultView(RentalsList);
+            RentalsView.Filter = FilterRental;
+
             LoadData();
         }
 
+        
+        private bool FilterRental(object item)
+        {
+            if (item is not Rental rental)
+                return false;
+
+            return SelectedRentalFilter switch
+            {
+                "Активні" => rental.IsActive,
+                "Завершені" => !rental.IsActive,
+                _ => true
+            };
+        }
         private void LoadData()
         {
             using var context = new AppDbContext();
@@ -111,6 +157,7 @@ namespace CarsharingWPF.ViewModels
             {
                 RentalsList.Add(rental);
             }
+            CommandManager.InvalidateRequerySuggested();
         }
 
         private void StartRental()
@@ -127,6 +174,21 @@ namespace CarsharingWPF.ViewModels
             }
 
             using var context = new AppDbContext();
+
+            bool clientHasActiveRental = context.Rentals.Any(r =>
+                r.ClientId == SelectedClient.Id &&
+                r.EndTime == null);
+
+            if (clientHasActiveRental)
+            {
+                MessageBox.Show(
+                    "У цього клієнта вже є активна оренда.",
+                    "Оренда неможлива",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+
+                return;
+            }
 
             var car = context.Cars.Find(SelectedCar.Id);
 
@@ -261,6 +323,51 @@ namespace CarsharingWPF.ViewModels
                 MessageBoxImage.Information);
         }
 
+        private void ClearHistory()
+        {
+            var completedCount = RentalsList.Count(r => !r.IsActive);
+
+            if (completedCount == 0)
+            {
+                MessageBox.Show(
+                    "Історія завершених оренд порожня.",
+                    "Очищення історії",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+
+                return;
+            }
+
+            var result = MessageBox.Show(
+                $"Ви дійсно хочете видалити всю історію завершених оренд?\n\n" +
+                $"Буде видалено записів: {completedCount}\n\n" +
+                $"Активні оренди видалені не будуть.",
+                "Підтвердження очищення",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+
+            if (result != MessageBoxResult.Yes)
+                return;
+
+            using var context = new AppDbContext();
+
+            var completedRentals = context.Rentals
+                .Where(r => r.EndTime != null)
+                .ToList();
+
+            context.Rentals.RemoveRange(completedRentals);
+            context.SaveChanges();
+
+            SelectedRental = null;
+
+            LoadData();
+
+            MessageBox.Show(
+                "Історію завершених оренд успішно очищено.",
+                "Очищення історії",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+        }
         public event PropertyChangedEventHandler? PropertyChanged;
 
         private void OnPropertyChanged(

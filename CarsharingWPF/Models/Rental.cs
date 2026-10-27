@@ -22,5 +22,8 @@ namespace CarsharingWPF.Models
 
         [NotMapped]
         public bool IsActive => EndTime == null;
+
+        [NotMapped]
+        public string Status => IsActive ? "Активна" : "Завершена";
     }
 } 

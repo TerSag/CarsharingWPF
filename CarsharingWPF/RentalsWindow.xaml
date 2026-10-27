@@ -13,6 +13,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
@@ -91,7 +92,7 @@
 
                 </StackPanel>
 
-                <!-- Кнопка -->
+                <!-- Початок оренди -->
                 <Button Grid.Column="4"
                         Content="Розпочати оренду"
                         Command="{Binding StartRentalCommand}"
@@ -103,9 +104,26 @@
 
         </Border>
 
+        <!-- Фільтр -->
+        <StackPanel Grid.Row="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Margin="0,0,0,10">
+
+            <TextBlock Text="Показати:"
+                       VerticalAlignment="Center"
+                       Margin="0,0,8,0"/>
+
+            <ComboBox ItemsSource="{Binding RentalFilters}"
+                      SelectedItem="{Binding SelectedRentalFilter}"
+                      Width="150"
+                      Height="30"/>
+
+        </StackPanel>
+
         <!-- Таблиця оренд -->
-        <DataGrid Grid.Row="2"
-                  ItemsSource="{Binding RentalsList}"
+        <DataGrid Grid.Row="3"
+                  ItemsSource="{Binding RentalsView}"
                   SelectedItem="{Binding SelectedRental, Mode=TwoWay}"
                   AutoGenerateColumns="False"
                   IsReadOnly="True"
@@ -120,6 +138,10 @@
                                     Binding="{Binding Client.FullName}"
                                     Width="*"/>
 
+                <DataGridTextColumn Header="Статус"
+                                    Binding="{Binding Status}"
+                                    Width="100"/>
+
                 <DataGridTextColumn Header="Автомобіль"
                                     Binding="{Binding Car.Brand}"
                                     Width="140"/>
@@ -133,11 +155,13 @@
                                     Width="140"/>
 
                 <DataGridTextColumn Header="Початок"
-                                    Binding="{Binding StartTime, StringFormat=dd.MM.yyyy HH:mm}"
+                                    Binding="{Binding StartTime,
+                                             StringFormat=dd.MM.yyyy HH:mm}"
                                     Width="160"/>
 
                 <DataGridTextColumn Header="Завершення"
-                                    Binding="{Binding EndTime, StringFormat=dd.MM.yyyy HH:mm}"
+                                    Binding="{Binding EndTime,
+                                             StringFormat=dd.MM.yyyy HH:mm}"
                                     Width="160"/>
 
                 <DataGridTextColumn Header="Вартість"
@@ -147,11 +171,18 @@
             </DataGrid.Columns>
 
         </DataGrid>
-        
-        <StackPanel Grid.Row="3"
+
+        <!-- Завершення оренди -->
+        <StackPanel Grid.Row="4"
             Orientation="Horizontal"
             HorizontalAlignment="Right"
             Margin="0,12,0,0">
+
+            <Button Content="Очистити історію"
+            Command="{Binding ClearHistoryCommand}"
+            Width="160"
+            Height="36"
+            Margin="0,0,10,0"/>
 
             <Button Content="Завершити оренду"
             Command="{Binding EndRentalCommand}"
