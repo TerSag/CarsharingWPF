@@ -231,7 +231,7 @@ namespace CarsharingWPF.ViewModels
                 ClientsList.Add(client);
             }
 
-
+            UpdateStatistics();
         }
 
         private void AddCar()
@@ -417,5 +417,128 @@ namespace CarsharingWPF.ViewModels
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+        
+        private int _totalCars;
+        public int TotalCars
+        {
+            get => _totalCars;
+            private set
+            {
+                if (_totalCars == value)
+                    return;
+
+                _totalCars = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private int _availableCars;
+        public int AvailableCars
+        {
+            get => _availableCars;
+            private set
+            {
+                if (_availableCars == value)
+                    return;
+
+                _availableCars = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private int _unavailableCars;
+        public int UnavailableCars
+        {
+            get => _unavailableCars;
+            private set
+            {
+                if (_unavailableCars == value)
+                    return;
+
+                _unavailableCars = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private int _totalClients;
+        public int TotalClients
+        {
+            get => _totalClients;
+            private set
+            {
+                if (_totalClients == value)
+                    return;
+
+                _totalClients = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private int _activeRentals;
+
+        public int ActiveRentals
+        {
+            get => _activeRentals;
+            private set
+            {
+                if (_activeRentals == value)
+                    return;
+
+                _activeRentals = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private int _completedRentals;
+        public int CompletedRentals
+        {
+            get => _completedRentals;
+            private set
+            {
+                if (_completedRentals == value)
+                    return;
+
+                _completedRentals = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private int _totalRevenue;
+        public int TotalRevenue
+        {
+            get => _totalRevenue;
+            private set
+            {
+                if (_totalRevenue == value)
+                    return;
+
+                _totalRevenue = value;
+                OnPropertyChanged();
+            }
+        }
+        private void UpdateStatistics()
+        {
+            using var context = new AppDbContext();
+
+            TotalCars = context.Cars.Count();
+
+            AvailableCars = context.Cars.Count(c => c.IsAvailable);
+
+            UnavailableCars = TotalCars - AvailableCars;
+
+            TotalClients = context.Clients.Count();
+
+            var rentals = context.Rentals.ToList();
+
+            ActiveRentals = rentals.Count(r => r.EndTime == null);
+
+            CompletedRentals = rentals.Count(r => r.EndTime != null);
+
+            TotalRevenue = rentals
+                .Where(r => r.EndTime != null)
+                .Sum(r => r.TotalPrice ?? 0);
+        }
+
+
     }
 }

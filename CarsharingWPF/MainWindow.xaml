@@ -15,28 +15,176 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" Margin="0,0,0,15">
+        <StackPanel Grid.Row="0"
+            Margin="0,0,0,15">
+
             <TextBlock Text="Автопарк"
-                       FontSize="28"
-                       FontWeight="Bold"/>
+               FontSize="28"
+               FontWeight="Bold"/>
+
             <TextBlock Text="Керування автомобілями інформаційної платформи каршерінгу"
-                       FontSize="14"
-                       Foreground="DimGray"
-                       Margin="0,4,0,0"/>
+               FontSize="14"
+               Foreground="DimGray"
+               Margin="0,4,0,0"/>
+
             <StackPanel Orientation="Horizontal"
-            Margin="0,10,0,0">
+                Margin="0,10,0,0">
 
-            <Button Content="Клієнти"
-                    Width="120"
-                    Height="34"
-                    Margin="0,0,8,0"
-                    Click="OpenClients_Click"/>
+                <Button Content="Клієнти"
+                Width="120"
+                Height="34"
+                Margin="0,0,8,0"
+                Click="OpenClients_Click"/>
 
-            <Button Content="Оренди"
-                    Width="120"
-                    Height="34"
-                    Click="OpenRentals_Click"/>
+                <Button Content="Оренди"
+                Width="120"
+                Height="34"
+                Click="OpenRentals_Click"/>
+
             </StackPanel>
+
+            <WrapPanel Margin="0,15,0,0">
+
+                <Border Width="130"
+                Height="75"
+                BorderBrush="LightGray"
+                BorderThickness="1"
+                CornerRadius="6"
+                Padding="10"
+                Margin="0,0,10,10">
+
+                    <StackPanel>
+                        <TextBlock Text="Всього авто"
+                           Foreground="DimGray"/>
+
+                        <TextBlock Text="{Binding TotalCars, Mode=OneWay}"
+                           FontSize="24"
+                           FontWeight="Bold"/>
+                    </StackPanel>
+
+                </Border>
+
+                <Border Width="130"
+                Height="75"
+                BorderBrush="LightGray"
+                BorderThickness="1"
+                CornerRadius="6"
+                Padding="10"
+                Margin="0,0,10,10">
+
+                    <StackPanel>
+                        <TextBlock Text="Доступні"
+                           Foreground="DimGray"/>
+
+                        <TextBlock Text="{Binding AvailableCars, Mode=OneWay}"
+                           FontSize="24"
+                           FontWeight="Bold"/>
+                    </StackPanel>
+
+                </Border>
+
+                <Border Width="130"
+                Height="75"
+                BorderBrush="LightGray"
+                BorderThickness="1"
+                CornerRadius="6"
+                Padding="10"
+                Margin="0,0,10,10">
+
+                    <StackPanel>
+                        <TextBlock Text="Недоступні"
+                           Foreground="DimGray"/>
+
+                        <TextBlock Text="{Binding UnavailableCars, Mode=OneWay}"
+                           FontSize="24"
+                           FontWeight="Bold"/>
+                    </StackPanel>
+
+                </Border>
+
+                <Border Width="130"
+                Height="75"
+                BorderBrush="LightGray"
+                BorderThickness="1"
+                CornerRadius="6"
+                Padding="10"
+                Margin="0,0,10,10">
+
+                    <StackPanel>
+                        <TextBlock Text="Клієнти"
+                           Foreground="DimGray"/>
+
+                        <TextBlock Text="{Binding TotalClients, Mode=OneWay}"
+                           FontSize="24"
+                           FontWeight="Bold"/>
+                    </StackPanel>
+
+                </Border>
+
+
+                <Border Width="130"
+                Height="75"
+                BorderBrush="LightGray"
+                BorderThickness="1"
+                CornerRadius="6"
+                Padding="10"
+                Margin="0,0,10,10">
+
+                    <StackPanel>
+                        <TextBlock Text="Активні оренди"
+                   Foreground="DimGray"/>
+
+                        <TextBlock Text="{Binding ActiveRentals, Mode=OneWay}"
+                   FontSize="24"
+                   FontWeight="Bold"/>
+                    </StackPanel>
+
+                </Border>
+
+                <Border Width="130"
+                Height="75"
+                BorderBrush="LightGray"
+                BorderThickness="1"
+                CornerRadius="6"
+                Padding="10"
+                Margin="0,0,10,10">
+
+                    <StackPanel>
+                        <TextBlock Text="Завершені"
+                   Foreground="DimGray"/>
+
+                        <TextBlock Text="{Binding CompletedRentals, Mode=OneWay}"
+                   FontSize="24"
+                   FontWeight="Bold"/>
+                    </StackPanel>
+
+                </Border>
+
+                <Border Width="145"
+                Height="75"
+                BorderBrush="LightGray"
+                BorderThickness="1"
+                CornerRadius="6"
+                Padding="10"
+                Margin="0,0,10,10">
+
+                    <StackPanel>
+                        <TextBlock Text="Загальний дохід"
+                           Foreground="DimGray"/>
+
+                        <TextBlock FontSize="22"
+                           FontWeight="Bold">
+
+                    <Run Text="{Binding TotalRevenue, Mode=OneWay}"/>
+                    <Run Text=" грн"/>
+
+                        </TextBlock>
+                    </StackPanel>
+
+                </Border>
+
+            </WrapPanel>
+
         </StackPanel>
 
         <Grid Grid.Row="1" Margin="0,0,0,15">

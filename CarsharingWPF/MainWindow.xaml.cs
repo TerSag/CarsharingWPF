@@ -9,7 +9,17 @@ namespace CarsharingWPF
         {
             InitializeComponent();
 
-            this.DataContext = new MainViewModel();
+            DataContext = new MainViewModel();
+
+            Activated += MainWindow_Activated;
+        }
+
+        private void MainWindow_Activated(object? sender, System.EventArgs e)
+        {
+            if (DataContext is MainViewModel viewModel)
+            {
+                viewModel.RefreshData();
+            }
         }
 
         private void OpenClients_Click(object sender, RoutedEventArgs e)
@@ -20,6 +30,11 @@ namespace CarsharingWPF
             };
 
             clientsWindow.ShowDialog();
+
+            if (DataContext is MainViewModel viewModel)
+            {
+                viewModel.RefreshData();
+            }
         }
 
         private void OpenRentals_Click(object sender, RoutedEventArgs e)
@@ -36,6 +51,6 @@ namespace CarsharingWPF
                 viewModel.RefreshData();
             }
         }
-
+    
     }
 }
