@@ -2,182 +2,225 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Керування клієнтами"
-        Height="600"
-        Width="900"
-        MinHeight="550"
-        MinWidth="800"
-        WindowStartupLocation="CenterOwner">
+        Width="950"
+        Height="650"
+        MinWidth="850"
+        MinHeight="600"
+        WindowStartupLocation="CenterOwner"
+        Background="#F5F7FA">
 
-    <Grid Margin="20">
+    <Window.Resources>
+
+        <Style x:Key="InputTextBoxStyle"
+               TargetType="TextBox">
+            <Setter Property="Height"
+                    Value="34"/>
+            <Setter Property="Padding"
+                    Value="8,5"/>
+            <Setter Property="BorderBrush"
+                    Value="#C8CED8"/>
+            <Setter Property="BorderThickness"
+                    Value="1"/>
+            <Setter Property="FontSize"
+                    Value="14"/>
+        </Style>
+
+        <Style x:Key="ActionButtonStyle"
+               TargetType="Button">
+            <Setter Property="Height"
+                    Value="38"/>
+            <Setter Property="MinWidth"
+                    Value="125"/>
+            <Setter Property="Padding"
+                    Value="16,0"/>
+            <Setter Property="Margin"
+                    Value="8,0,0,0"/>
+            <Setter Property="FontSize"
+                    Value="14"/>
+            <Setter Property="Cursor"
+                    Value="Hand"/>
+        </Style>
+
+    </Window.Resources>
+
+    <Grid Margin="22">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- Заголовок -->
         <StackPanel Grid.Row="0"
-                    Margin="0,0,0,15">
+                    Margin="0,0,0,18">
 
             <TextBlock Text="Клієнти"
-                       FontSize="28"
-                       FontWeight="Bold"/>
+                       FontSize="30"
+                       FontWeight="SemiBold"
+                       Foreground="#1F2937"/>
 
-            <TextBlock Text="Керування клієнтами інформаційної платформи каршерінгу"
+            <TextBlock Text="Керування даними клієнтів каршерингу"
                        FontSize="14"
-                       Foreground="DimGray"
-                       Margin="0,4,0,0"/>
+                       Foreground="#6B7280"
+                       Margin="0,5,0,0"/>
 
         </StackPanel>
 
-        <!-- Таблиця клієнтів -->
-        <DataGrid Grid.Row="1"
-                  ItemsSource="{Binding ClientsList}"
-                  SelectedItem="{Binding SelectedClient, Mode=TwoWay}"
-                  AutoGenerateColumns="False"
-                  IsReadOnly="True"
-                  SelectionMode="Single"
-                  SelectionUnit="FullRow"
-                  CanUserAddRows="False"
-                  RowHeight="34"
-                  Margin="0,0,0,15">
-
-            <DataGrid.Columns>
-
-                <DataGridTextColumn Header="Ім'я"
-                                    Binding="{Binding FirstName}"
-                                    Width="*"/>
-
-                <DataGridTextColumn Header="Прізвище"
-                                    Binding="{Binding LastName}"
-                                    Width="*"/>
-
-                <DataGridTextColumn Header="Телефон"
-                                    Binding="{Binding Phone}"
-                                    Width="180"/>
-
-                <DataGridTextColumn Header="Водійське посвідчення"
-                                    Binding="{Binding DriverLicense}"
-                                    Width="200"/>
-
-            </DataGrid.Columns>
-
-        </DataGrid>
-
-        <!-- Форма -->
-        <Border Grid.Row="2"
-                BorderBrush="LightGray"
+        <Border Grid.Row="1"
+                Background="White"
+                BorderBrush="#DDE2EA"
                 BorderThickness="1"
-                CornerRadius="6"
-                Padding="15"
-                Margin="0,0,0,12">
+                CornerRadius="8"
+                Margin="0,0,0,16">
 
-            <Grid>
+            <DataGrid ItemsSource="{Binding ClientsList}"
+                      SelectedItem="{Binding SelectedClient, Mode=TwoWay}"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      CanUserAddRows="False"
+                      SelectionMode="Single"
+                      SelectionUnit="FullRow"
+                      GridLinesVisibility="Horizontal"
+                      HeadersVisibility="Column"
+                      BorderThickness="0"
+                      RowHeight="38"
+                      ColumnHeaderHeight="40"
+                      AlternatingRowBackground="#F9FAFB">
 
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
+                <DataGrid.Columns>
 
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="20"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
+                    <DataGridTextColumn Header="Ім'я"
+                                        Binding="{Binding FirstName}"
+                                        Width="*"/>
 
-                <TextBlock Grid.Row="0"
-                           Grid.ColumnSpan="3"
-                           Text="Дані клієнта"
-                           FontSize="18"
-                           FontWeight="SemiBold"
-                           Margin="0,0,0,12"/>
+                    <DataGridTextColumn Header="Прізвище"
+                                        Binding="{Binding LastName}"
+                                        Width="*"/>
 
-                <StackPanel Grid.Row="1"
-                            Grid.Column="0">
+                    <DataGridTextColumn Header="Телефон"
+                                        Binding="{Binding Phone}"
+                                        Width="180"/>
 
-                    <TextBlock Text="Ім'я"
-                               Margin="0,0,0,4"/>
+                    <DataGridTextColumn Header="Посвідчення водія"
+                                        Binding="{Binding DriverLicense}"
+                                        Width="200"/>
 
-                    <TextBox Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged}"
-                             Height="30"
-                             Padding="6,3"/>
+                </DataGrid.Columns>
 
-                </StackPanel>
-
-                <StackPanel Grid.Row="1"
-                            Grid.Column="2">
-
-                    <TextBlock Text="Прізвище"
-                               Margin="0,0,0,4"/>
-
-                    <TextBox Text="{Binding LastName, UpdateSourceTrigger=PropertyChanged}"
-                             Height="30"
-                             Padding="6,3"/>
-
-                </StackPanel>
-
-                <StackPanel Grid.Row="2"
-                            Grid.Column="0"
-                            Margin="0,12,0,0">
-
-                    <TextBlock Text="Телефон"
-                               Margin="0,0,0,4"/>
-
-                    <TextBox Text="{Binding Phone, UpdateSourceTrigger=PropertyChanged}"
-                             Height="30"
-                             Padding="6,3"/>
-
-                </StackPanel>
-
-                <StackPanel Grid.Row="2"
-                            Grid.Column="2"
-                            Margin="0,12,0,0">
-
-                    <TextBlock Text="Водійське посвідчення"
-                               Margin="0,0,0,4"/>
-
-                    <TextBox Text="{Binding DriverLicense, UpdateSourceTrigger=PropertyChanged}"
-                             Height="30"
-                             Padding="6,3"/>
-
-                </StackPanel>
-
-            </Grid>
+            </DataGrid>
 
         </Border>
 
-        <!-- Кнопки -->
-        <StackPanel Grid.Row="3"
-                    Orientation="Horizontal"
-                    HorizontalAlignment="Right">
+        <Border Grid.Row="2"
+                Background="White"
+                BorderBrush="#DDE2EA"
+                BorderThickness="1"
+                CornerRadius="8"
+                Padding="16">
 
-            <Button Content="Очистити"
-                    Command="{Binding ClearCommand}"
-                    Width="110"
-                    Height="36"
-                    Margin="0,0,8,0"/>
+            <StackPanel>
 
-            <Button Content="Додати"
-                    Command="{Binding AddCommand}"
-                    Width="110"
-                    Height="36"
-                    Margin="0,0,8,0"/>
+                <TextBlock Text="Дані клієнта"
+                           FontSize="19"
+                           FontWeight="SemiBold"
+                           Foreground="#1F2937"
+                           Margin="0,0,0,14"/>
 
-            <Button Content="Зберегти зміни"
-                    Command="{Binding UpdateCommand}"
-                    Width="140"
-                    Height="36"
-                    Margin="0,0,8,0"/>
+                <Grid>
 
-            <Button Content="Видалити"
-                    Command="{Binding DeleteCommand}"
-                    Width="110"
-                    Height="36"/>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
 
-        </StackPanel>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="14"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0"
+                                Grid.Column="0">
+
+                        <TextBlock Text="Ім'я"
+                                   FontSize="13"
+                                   Foreground="#4B5563"
+                                   Margin="0,0,0,5"/>
+
+                        <TextBox Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{StaticResource InputTextBoxStyle}"/>
+
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="0"
+                                Grid.Column="2">
+
+                        <TextBlock Text="Прізвище"
+                                   FontSize="13"
+                                   Foreground="#4B5563"
+                                   Margin="0,0,0,5"/>
+
+                        <TextBox Text="{Binding LastName, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{StaticResource InputTextBoxStyle}"/>
+
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="2"
+                                Grid.Column="0">
+
+                        <TextBlock Text="Телефон"
+                                   FontSize="13"
+                                   Foreground="#4B5563"
+                                   Margin="0,0,0,5"/>
+
+                        <TextBox Text="{Binding Phone, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{StaticResource InputTextBoxStyle}"/>
+
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="2"
+                                Grid.Column="2">
+
+                        <TextBlock Text="Посвідчення водія"
+                                   FontSize="13"
+                                   Foreground="#4B5563"
+                                   Margin="0,0,0,5"/>
+
+                        <TextBox Text="{Binding DriverLicense, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{StaticResource InputTextBoxStyle}"/>
+
+                    </StackPanel>
+
+                </Grid>
+
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Right"
+                            Margin="0,18,0,0">
+
+                    <Button Content="Очистити"
+                            Command="{Binding ClearCommand}"
+                            Style="{StaticResource ActionButtonStyle}"/>
+
+                    <Button Content="Додати"
+                            Command="{Binding AddCommand}"
+                            Style="{StaticResource ActionButtonStyle}"/>
+
+                    <Button Content="Зберегти зміни"
+                            Command="{Binding UpdateCommand}"
+                            Style="{StaticResource ActionButtonStyle}"
+                            MinWidth="150"/>
+
+                    <Button Content="Видалити"
+                            Command="{Binding DeleteCommand}"
+                            Style="{StaticResource ActionButtonStyle}"/>
+
+                </StackPanel>
+
+            </StackPanel>
+
+        </Border>
 
     </Grid>
+
 </Window>

@@ -320,11 +320,15 @@ namespace CarsharingWPF.ViewModels
 
         private void DeleteCar()
         {
-            if (SelectedCar == null)
+            var selectedCar = SelectedCar;
+
+            if (selectedCar == null)
                 return;
 
+            int selectedId = selectedCar.Id;
+
             var result = MessageBox.Show(
-                $"Видалити автомобіль {SelectedCar.Brand} {SelectedCar.Model} ({SelectedCar.LicensePlate})?",
+                $"Видалити автомобіль {selectedCar.Brand} {selectedCar.Model} ({selectedCar.LicensePlate})?",
                 "Підтвердження видалення",
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Question);
@@ -332,9 +336,8 @@ namespace CarsharingWPF.ViewModels
             if (result != MessageBoxResult.Yes)
                 return;
 
-            var selectedId = SelectedCar.Id;
-
             using var context = new AppDbContext();
+
             var car = context.Cars.FirstOrDefault(c => c.Id == selectedId);
 
             if (car != null)

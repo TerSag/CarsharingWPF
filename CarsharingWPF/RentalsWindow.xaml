@@ -2,13 +2,60 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Керування орендами"
-        Height="650"
-        Width="1000"
-        MinHeight="600"
-        MinWidth="900"
-        WindowStartupLocation="CenterOwner">
+        Width="1100"
+        Height="720"
+        MinWidth="1000"
+        MinHeight="650"
+        WindowStartupLocation="CenterOwner"
+        Background="#F5F7FA">
 
-    <Grid Margin="20">
+    <Window.Resources>
+
+        <Style x:Key="InputComboBoxStyle"
+               TargetType="ComboBox">
+            <Setter Property="Height"
+                    Value="34"/>
+            <Setter Property="Padding"
+                    Value="6,3"/>
+            <Setter Property="BorderBrush"
+                    Value="#C8CED8"/>
+            <Setter Property="FontSize"
+                    Value="14"/>
+        </Style>
+
+        <Style x:Key="InputTextBoxStyle"
+               TargetType="TextBox">
+            <Setter Property="Height"
+                    Value="34"/>
+            <Setter Property="Padding"
+                    Value="8,5"/>
+            <Setter Property="BorderBrush"
+                    Value="#C8CED8"/>
+            <Setter Property="BorderThickness"
+                    Value="1"/>
+            <Setter Property="FontSize"
+                    Value="14"/>
+        </Style>
+
+        <Style x:Key="ActionButtonStyle"
+               TargetType="Button">
+            <Setter Property="Height"
+                    Value="38"/>
+            <Setter Property="MinWidth"
+                    Value="145"/>
+            <Setter Property="Padding"
+                    Value="16,0"/>
+            <Setter Property="Margin"
+                    Value="8,0,0,0"/>
+            <Setter Property="FontSize"
+                    Value="14"/>
+            <Setter Property="Cursor"
+                    Value="Hand"/>
+        </Style>
+
+    </Window.Resources>
+
+    <Grid Margin="22">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -18,30 +65,28 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- ЗАГОЛОВОК -->
-
         <StackPanel Grid.Row="0"
-                    Margin="0,0,0,15">
+                    Margin="0,0,0,18">
 
             <TextBlock Text="Оренди"
-                       FontSize="28"
-                       FontWeight="Bold"/>
+                       FontSize="30"
+                       FontWeight="SemiBold"
+                       Foreground="#1F2937"/>
 
-            <TextBlock Text="Керування орендами автомобілів"
+            <TextBlock Text="Керування активними та завершеними орендами"
                        FontSize="14"
-                       Foreground="DimGray"
-                       Margin="0,4,0,0"/>
+                       Foreground="#6B7280"
+                       Margin="0,5,0,0"/>
 
         </StackPanel>
 
-        <!-- СТВОРЕННЯ ОРЕНДИ -->
-
         <Border Grid.Row="1"
-                BorderBrush="LightGray"
+                Background="White"
+                BorderBrush="#DDE2EA"
                 BorderThickness="1"
-                CornerRadius="6"
-                Padding="15"
-                Margin="0,0,0,15">
+                CornerRadius="8"
+                Padding="16"
+                Margin="0,0,0,16">
 
             <Grid>
 
@@ -53,188 +98,168 @@
                     <ColumnDefinition Width="180"/>
                 </Grid.ColumnDefinitions>
 
-                <!-- Клієнт -->
-
                 <StackPanel Grid.Column="0">
 
                     <TextBlock Text="Клієнт"
-                               Margin="0,0,0,4"/>
+                               FontSize="13"
+                               Foreground="#4B5563"
+                               Margin="0,0,0,5"/>
 
                     <ComboBox ItemsSource="{Binding ClientsList}"
                               SelectedItem="{Binding SelectedClient}"
                               DisplayMemberPath="FullName"
-                              Height="32"
-                              Padding="6,3"/>
+                              Style="{StaticResource InputComboBoxStyle}"/>
 
                 </StackPanel>
-
-                <!-- Автомобіль -->
 
                 <StackPanel Grid.Column="2">
 
                     <TextBlock Text="Автомобіль"
-                               Margin="0,0,0,4"/>
+                               FontSize="13"
+                               Foreground="#4B5563"
+                               Margin="0,0,0,5"/>
 
                     <ComboBox ItemsSource="{Binding AvailableCarsList}"
                               SelectedItem="{Binding SelectedCar}"
-                              Height="32"
-                              Padding="6,3">
+                              Style="{StaticResource InputComboBoxStyle}">
 
                         <ComboBox.ItemTemplate>
-
                             <DataTemplate>
-
                                 <TextBlock>
-
                                     <Run Text="{Binding Brand}"/>
-
                                     <Run Text=" "/>
-
                                     <Run Text="{Binding Model}"/>
-
                                     <Run Text=" — "/>
-
                                     <Run Text="{Binding LicensePlate}"/>
-
                                 </TextBlock>
-
                             </DataTemplate>
-
                         </ComboBox.ItemTemplate>
 
                     </ComboBox>
 
                 </StackPanel>
 
-                <!-- Кнопка старту -->
-
                 <Button Grid.Column="4"
                         Content="Розпочати оренду"
                         Command="{Binding StartRentalCommand}"
-                        Width="170"
-                        Height="36"
+                        Style="{StaticResource ActionButtonStyle}"
+                        Margin="0"
                         VerticalAlignment="Bottom"/>
 
             </Grid>
 
         </Border>
 
-        <!-- ПОШУК І ФІЛЬТР -->
-
         <Grid Grid.Row="2"
-              Margin="0,0,0,10">
+              Margin="0,0,0,12">
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="220"/>
             </Grid.ColumnDefinitions>
 
-            <!-- Пошук -->
+            <StackPanel Grid.Column="0">
 
-            <StackPanel Grid.Column="0"
-                        Orientation="Horizontal">
+                <TextBlock Text="Пошук"
+                           FontSize="13"
+                           Foreground="#4B5563"
+                           Margin="0,0,0,5"/>
 
-                <TextBlock Text="Пошук:"
-                           VerticalAlignment="Center"
-                           Margin="0,0,8,0"/>
-
-                <TextBox Text="{Binding SearchText,
-                                UpdateSourceTrigger=PropertyChanged}"
-                         Width="300"
-                         Height="30"
-                         Padding="6,3"
-                         ToolTip="Пошук за клієнтом, маркою, моделлю або номером автомобіля"/>
+                <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                         Style="{StaticResource InputTextBoxStyle}"/>
 
             </StackPanel>
 
-            <!-- Фільтр -->
+            <StackPanel Grid.Column="2">
 
-            <StackPanel Grid.Column="1"
-                        Orientation="Horizontal">
-
-                <TextBlock Text="Показати:"
-                           VerticalAlignment="Center"
-                           Margin="0,0,8,0"/>
+                <TextBlock Text="Статус оренди"
+                           FontSize="13"
+                           Foreground="#4B5563"
+                           Margin="0,0,0,5"/>
 
                 <ComboBox ItemsSource="{Binding RentalFilters}"
                           SelectedItem="{Binding SelectedRentalFilter}"
-                          Width="150"
-                          Height="30"/>
+                          Style="{StaticResource InputComboBoxStyle}"/>
 
             </StackPanel>
 
         </Grid>
 
-        <!-- ТАБЛИЦЯ -->
+        <Border Grid.Row="3"
+                Background="White"
+                BorderBrush="#DDE2EA"
+                BorderThickness="1"
+                CornerRadius="8"
+                Margin="0,0,0,16">
 
-        <DataGrid Grid.Row="3"
-                  ItemsSource="{Binding RentalsView}"
-                  SelectedItem="{Binding SelectedRental,
-                                         Mode=TwoWay}"
-                  AutoGenerateColumns="False"
-                  IsReadOnly="True"
-                  CanUserAddRows="False"
-                  SelectionMode="Single"
-                  SelectionUnit="FullRow"
-                  RowHeight="34">
+            <DataGrid ItemsSource="{Binding RentalsView}"
+                      SelectedItem="{Binding SelectedRental, Mode=TwoWay}"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      CanUserAddRows="False"
+                      SelectionMode="Single"
+                      SelectionUnit="FullRow"
+                      GridLinesVisibility="Horizontal"
+                      HeadersVisibility="Column"
+                      BorderThickness="0"
+                      RowHeight="38"
+                      ColumnHeaderHeight="40"
+                      AlternatingRowBackground="#F9FAFB">
 
-            <DataGrid.Columns>
+                <DataGrid.Columns>
 
-                <DataGridTextColumn Header="Клієнт"
-                                    Binding="{Binding Client.FullName}"
-                                    Width="*"/>
+                    <DataGridTextColumn Header="Клієнт"
+                                        Binding="{Binding Client.FullName}"
+                                        Width="*"/>
 
-                <DataGridTextColumn Header="Статус"
-                                    Binding="{Binding Status}"
-                                    Width="100"/>
+                    <DataGridTextColumn Header="Статус"
+                                        Binding="{Binding Status}"
+                                        Width="110"/>
 
-                <DataGridTextColumn Header="Автомобіль"
-                                    Binding="{Binding Car.Brand}"
-                                    Width="140"/>
+                    <DataGridTextColumn Header="Марка"
+                                        Binding="{Binding Car.Brand}"
+                                        Width="130"/>
 
-                <DataGridTextColumn Header="Модель"
-                                    Binding="{Binding Car.Model}"
-                                    Width="140"/>
+                    <DataGridTextColumn Header="Модель"
+                                        Binding="{Binding Car.Model}"
+                                        Width="130"/>
 
-                <DataGridTextColumn Header="Номер"
-                                    Binding="{Binding Car.LicensePlate}"
-                                    Width="140"/>
+                    <DataGridTextColumn Header="Номер"
+                                        Binding="{Binding Car.LicensePlate}"
+                                        Width="130"/>
 
-                <DataGridTextColumn Header="Початок"
-                                    Binding="{Binding StartTime,
-                                    StringFormat=dd.MM.yyyy HH:mm}"
-                                    Width="160"/>
+                    <DataGridTextColumn Header="Початок"
+                                        Binding="{Binding StartTime, StringFormat=dd.MM.yyyy HH:mm}"
+                                        Width="150"/>
 
-                <DataGridTextColumn Header="Завершення"
-                                    Binding="{Binding EndTime,
-                                    StringFormat=dd.MM.yyyy HH:mm}"
-                                    Width="160"/>
+                    <DataGridTextColumn Header="Завершення"
+                                        Binding="{Binding EndTime, StringFormat=dd.MM.yyyy HH:mm}"
+                                        Width="150"/>
 
-                <DataGridTextColumn Header="Вартість"
-                                    Binding="{Binding TotalPrice}"
-                                    Width="110"/>
+                    <DataGridTextColumn Header="Вартість"
+                                        Binding="{Binding TotalPrice}"
+                                        Width="100"/>
 
-            </DataGrid.Columns>
+                </DataGrid.Columns>
 
-        </DataGrid>
+            </DataGrid>
 
-        <!-- НИЖНІ КНОПКИ -->
+        </Border>
 
         <StackPanel Grid.Row="4"
                     Orientation="Horizontal"
-                    HorizontalAlignment="Right"
-                    Margin="0,12,0,0">
+                    HorizontalAlignment="Right">
 
             <Button Content="Очистити історію"
                     Command="{Binding ClearHistoryCommand}"
-                    Width="160"
-                    Height="36"
-                    Margin="0,0,10,0"/>
+                    Style="{StaticResource ActionButtonStyle}"
+                    MinWidth="160"/>
 
             <Button Content="Завершити оренду"
                     Command="{Binding EndRentalCommand}"
-                    Width="170"
-                    Height="36"/>
+                    Style="{StaticResource ActionButtonStyle}"
+                    MinWidth="165"/>
 
         </StackPanel>
 

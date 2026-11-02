@@ -11,16 +11,8 @@ namespace CarsharingWPF
 
             DataContext = new MainViewModel();
 
-            Activated += MainWindow_Activated;
         }
 
-        private void MainWindow_Activated(object? sender, System.EventArgs e)
-        {
-            if (DataContext is MainViewModel viewModel)
-            {
-                viewModel.RefreshData();
-            }
-        }
 
         private void OpenClients_Click(object sender, RoutedEventArgs e)
         {
