@@ -4,34 +4,30 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
 using CarsharingWPF.Data;
 using CarsharingWPF.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Windows.Data;
-
 
 namespace CarsharingWPF.ViewModels
 {
     public class RentalsViewModel : INotifyPropertyChanged
     {
         public ObservableCollection<Rental> RentalsList { get; } = new();
-
-        public ICollectionView RentalsView { get; }
         public ObservableCollection<Client> ClientsList { get; } = new();
-
         public ObservableCollection<Car> AvailableCarsList { get; } = new();
 
-        private Client? _selectedClient;
-        private Car? _selectedCar;
+        public ICollectionView RentalsView { get; }
 
-        private Rental? _selectedRental;
         public ObservableCollection<string> RentalFilters { get; } = new()
-{
+        {
             "Усі",
             "Активні",
             "Завершені"
-};
+        };
+
+        private string _selectedRentalFilter = "Усі";
 
         public string SelectedRentalFilter
         {
@@ -43,51 +39,77 @@ namespace CarsharingWPF.ViewModels
 
                 _selectedRentalFilter = value;
                 OnPropertyChanged();
-
                 RentalsView.Refresh();
             }
         }
 
-        private string _selectedRentalFilter = "Усі";
+        private string _searchText = string.Empty;
+
+        public string SearchText
+        {
+            get => _searchText;
+            set
+            {
+                if (_searchText == value)
+                    return;
+
+                _searchText = value;
+                OnPropertyChanged();
+                RentalsView.Refresh();
+            }
+        }
+
+        private Client? _selectedClient;
+
         public Client? SelectedClient
         {
             get => _selectedClient;
             set
             {
+                if (_selectedClient == value)
+                    return;
+
                 _selectedClient = value;
                 OnPropertyChanged();
-
                 CommandManager.InvalidateRequerySuggested();
             }
         }
+
+        private Car? _selectedCar;
 
         public Car? SelectedCar
         {
             get => _selectedCar;
             set
             {
+                if (_selectedCar == value)
+                    return;
+
                 _selectedCar = value;
                 OnPropertyChanged();
-
                 CommandManager.InvalidateRequerySuggested();
             }
         }
+
+        private Rental? _selectedRental;
 
         public Rental? SelectedRental
         {
             get => _selectedRental;
             set
             {
+                if (_selectedRental == value)
+                    return;
+
                 _selectedRental = value;
                 OnPropertyChanged();
-
                 CommandManager.InvalidateRequerySuggested();
             }
         }
+
         public ICommand StartRentalCommand { get; }
         public ICommand EndRentalCommand { get; }
         public ICommand ClearHistoryCommand { get; }
-
 
         public RentalsViewModel()
         {
@@ -100,8 +122,8 @@ namespace CarsharingWPF.ViewModels
                 _ => SelectedRental != null && SelectedRental.IsActive);
 
             ClearHistoryCommand = new RentalRelayCommand(
-      _           => ClearHistory(),
-      _           => RentalsList.Any(r => !r.IsActive));
+                _ => ClearHistory(),
+                _ => RentalsList.Any(r => !r.IsActive));
 
             RentalsView = CollectionViewSource.GetDefaultView(RentalsList);
             RentalsView.Filter = FilterRental;
@@ -109,19 +131,42 @@ namespace CarsharingWPF.ViewModels
             LoadData();
         }
 
-        
         private bool FilterRental(object item)
         {
             if (item is not Rental rental)
                 return false;
 
-            return SelectedRentalFilter switch
+            bool matchesStatus = SelectedRentalFilter switch
             {
                 "Активні" => rental.IsActive,
                 "Завершені" => !rental.IsActive,
                 _ => true
             };
+
+            if (!matchesStatus)
+                return false;
+
+            if (string.IsNullOrWhiteSpace(SearchText))
+                return true;
+
+            string search = SearchText.Trim();
+
+            string clientName = rental.Client?.FullName ?? string.Empty;
+            string firstName = rental.Client?.FirstName ?? string.Empty;
+            string lastName = rental.Client?.LastName ?? string.Empty;
+            string brand = rental.Car?.Brand ?? string.Empty;
+            string model = rental.Car?.Model ?? string.Empty;
+            string licensePlate = rental.Car?.LicensePlate ?? string.Empty;
+
+            return
+                clientName.Contains(search, StringComparison.OrdinalIgnoreCase) ||
+                firstName.Contains(search, StringComparison.OrdinalIgnoreCase) ||
+                lastName.Contains(search, StringComparison.OrdinalIgnoreCase) ||
+                brand.Contains(search, StringComparison.OrdinalIgnoreCase) ||
+                model.Contains(search, StringComparison.OrdinalIgnoreCase) ||
+                licensePlate.Contains(search, StringComparison.OrdinalIgnoreCase);
         }
+
         private void LoadData()
         {
             using var context = new AppDbContext();
@@ -157,6 +202,8 @@ namespace CarsharingWPF.ViewModels
             {
                 RentalsList.Add(rental);
             }
+
+            RentalsView.Refresh();
             CommandManager.InvalidateRequerySuggested();
         }
 
@@ -207,7 +254,7 @@ namespace CarsharingWPF.ViewModels
             {
                 MessageBox.Show(
                     "Цей автомобіль уже недоступний для оренди.",
-                    "Помилка",
+                    "Оренда неможлива",
                     MessageBoxButton.OK,
                     MessageBoxImage.Warning);
 
@@ -224,7 +271,6 @@ namespace CarsharingWPF.ViewModels
             };
 
             context.Rentals.Add(rental);
-
             car.IsAvailable = false;
 
             context.SaveChanges();
@@ -294,7 +340,6 @@ namespace CarsharingWPF.ViewModels
             }
 
             DateTime endTime = DateTime.Now;
-
             TimeSpan duration = endTime - rental.StartTime;
 
             int hours = Math.Max(
@@ -305,7 +350,6 @@ namespace CarsharingWPF.ViewModels
 
             rental.EndTime = endTime;
             rental.TotalPrice = totalPrice;
-
             rental.Car.IsAvailable = true;
 
             context.SaveChanges();
@@ -315,7 +359,7 @@ namespace CarsharingWPF.ViewModels
             LoadData();
 
             MessageBox.Show(
-                $"Оренду завершено.\n" +
+                $"Оренду завершено.\n\n" +
                 $"Тривалість: {hours} год.\n" +
                 $"До сплати: {totalPrice} грн.",
                 "Оренду завершено",
@@ -325,7 +369,7 @@ namespace CarsharingWPF.ViewModels
 
         private void ClearHistory()
         {
-            var completedCount = RentalsList.Count(r => !r.IsActive);
+            int completedCount = RentalsList.Count(r => !r.IsActive);
 
             if (completedCount == 0)
             {
@@ -339,7 +383,7 @@ namespace CarsharingWPF.ViewModels
             }
 
             var result = MessageBox.Show(
-                $"Ви дійсно хочете видалити всю історію завершених оренд?\n\n" +
+                $"Ви дійсно хочете очистити історію завершених оренд?\n\n" +
                 $"Буде видалено записів: {completedCount}\n\n" +
                 $"Активні оренди видалені не будуть.",
                 "Підтвердження очищення",
@@ -363,14 +407,16 @@ namespace CarsharingWPF.ViewModels
             LoadData();
 
             MessageBox.Show(
-                "Історію завершених оренд успішно очищено.",
+                $"Історію завершених оренд очищено.\n\n" +
+                $"Видалено записів: {completedRentals.Count}.",
                 "Очищення історії",
                 MessageBoxButton.OK,
                 MessageBoxImage.Information);
         }
+
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        private void OnPropertyChanged(
+        protected void OnPropertyChanged(
             [CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(

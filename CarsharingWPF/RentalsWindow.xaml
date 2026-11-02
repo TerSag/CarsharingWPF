@@ -18,7 +18,8 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- Заголовок -->
+        <!-- ЗАГОЛОВОК -->
+
         <StackPanel Grid.Row="0"
                     Margin="0,0,0,15">
 
@@ -33,7 +34,8 @@
 
         </StackPanel>
 
-        <!-- Створення оренди -->
+        <!-- СТВОРЕННЯ ОРЕНДИ -->
+
         <Border Grid.Row="1"
                 BorderBrush="LightGray"
                 BorderThickness="1"
@@ -52,6 +54,7 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- Клієнт -->
+
                 <StackPanel Grid.Column="0">
 
                     <TextBlock Text="Клієнт"
@@ -66,6 +69,7 @@
                 </StackPanel>
 
                 <!-- Автомобіль -->
+
                 <StackPanel Grid.Column="2">
 
                     <TextBlock Text="Автомобіль"
@@ -77,22 +81,33 @@
                               Padding="6,3">
 
                         <ComboBox.ItemTemplate>
+
                             <DataTemplate>
+
                                 <TextBlock>
+
                                     <Run Text="{Binding Brand}"/>
+
                                     <Run Text=" "/>
+
                                     <Run Text="{Binding Model}"/>
+
                                     <Run Text=" — "/>
+
                                     <Run Text="{Binding LicensePlate}"/>
+
                                 </TextBlock>
+
                             </DataTemplate>
+
                         </ComboBox.ItemTemplate>
 
                     </ComboBox>
 
                 </StackPanel>
 
-                <!-- Початок оренди -->
+                <!-- Кнопка старту -->
+
                 <Button Grid.Column="4"
                         Content="Розпочати оренду"
                         Command="{Binding StartRentalCommand}"
@@ -104,27 +119,58 @@
 
         </Border>
 
-        <!-- Фільтр -->
-        <StackPanel Grid.Row="2"
-                    Orientation="Horizontal"
-                    HorizontalAlignment="Right"
-                    Margin="0,0,0,10">
+        <!-- ПОШУК І ФІЛЬТР -->
 
-            <TextBlock Text="Показати:"
-                       VerticalAlignment="Center"
-                       Margin="0,0,8,0"/>
+        <Grid Grid.Row="2"
+              Margin="0,0,0,10">
 
-            <ComboBox ItemsSource="{Binding RentalFilters}"
-                      SelectedItem="{Binding SelectedRentalFilter}"
-                      Width="150"
-                      Height="30"/>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
 
-        </StackPanel>
+            <!-- Пошук -->
 
-        <!-- Таблиця оренд -->
+            <StackPanel Grid.Column="0"
+                        Orientation="Horizontal">
+
+                <TextBlock Text="Пошук:"
+                           VerticalAlignment="Center"
+                           Margin="0,0,8,0"/>
+
+                <TextBox Text="{Binding SearchText,
+                                UpdateSourceTrigger=PropertyChanged}"
+                         Width="300"
+                         Height="30"
+                         Padding="6,3"
+                         ToolTip="Пошук за клієнтом, маркою, моделлю або номером автомобіля"/>
+
+            </StackPanel>
+
+            <!-- Фільтр -->
+
+            <StackPanel Grid.Column="1"
+                        Orientation="Horizontal">
+
+                <TextBlock Text="Показати:"
+                           VerticalAlignment="Center"
+                           Margin="0,0,8,0"/>
+
+                <ComboBox ItemsSource="{Binding RentalFilters}"
+                          SelectedItem="{Binding SelectedRentalFilter}"
+                          Width="150"
+                          Height="30"/>
+
+            </StackPanel>
+
+        </Grid>
+
+        <!-- ТАБЛИЦЯ -->
+
         <DataGrid Grid.Row="3"
                   ItemsSource="{Binding RentalsView}"
-                  SelectedItem="{Binding SelectedRental, Mode=TwoWay}"
+                  SelectedItem="{Binding SelectedRental,
+                                         Mode=TwoWay}"
                   AutoGenerateColumns="False"
                   IsReadOnly="True"
                   CanUserAddRows="False"
@@ -156,12 +202,12 @@
 
                 <DataGridTextColumn Header="Початок"
                                     Binding="{Binding StartTime,
-                                             StringFormat=dd.MM.yyyy HH:mm}"
+                                    StringFormat=dd.MM.yyyy HH:mm}"
                                     Width="160"/>
 
                 <DataGridTextColumn Header="Завершення"
                                     Binding="{Binding EndTime,
-                                             StringFormat=dd.MM.yyyy HH:mm}"
+                                    StringFormat=dd.MM.yyyy HH:mm}"
                                     Width="160"/>
 
                 <DataGridTextColumn Header="Вартість"
@@ -172,24 +218,26 @@
 
         </DataGrid>
 
-        <!-- Завершення оренди -->
+        <!-- НИЖНІ КНОПКИ -->
+
         <StackPanel Grid.Row="4"
-            Orientation="Horizontal"
-            HorizontalAlignment="Right"
-            Margin="0,12,0,0">
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Margin="0,12,0,0">
 
             <Button Content="Очистити історію"
-            Command="{Binding ClearHistoryCommand}"
-            Width="160"
-            Height="36"
-            Margin="0,0,10,0"/>
+                    Command="{Binding ClearHistoryCommand}"
+                    Width="160"
+                    Height="36"
+                    Margin="0,0,10,0"/>
 
             <Button Content="Завершити оренду"
-            Command="{Binding EndRentalCommand}"
-            Width="170"
-            Height="36"/>
+                    Command="{Binding EndRentalCommand}"
+                    Width="170"
+                    Height="36"/>
 
         </StackPanel>
 
     </Grid>
+
 </Window>
