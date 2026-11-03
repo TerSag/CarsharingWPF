@@ -174,6 +174,17 @@ namespace CarsharingWPF.ViewModels
                 DriverLicense = DriverLicense.Trim()
             };
 
+            if (!IsValidPhone(Phone))
+            {
+                MessageBox.Show(
+                    "Введіть номер телефону у форматі +380 XX XXX XX XX.",
+                    "Некоректний номер телефону",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+
+                return;
+            }
+
             context.Clients.Add(client);
             context.SaveChanges();
 
@@ -182,6 +193,15 @@ namespace CarsharingWPF.ViewModels
 
             MessageBox.Show("Клієнта успішно додано.");
         }
+
+        private bool IsValidPhone(string? phone)
+        {
+            return !string.IsNullOrWhiteSpace(phone) &&
+                   System.Text.RegularExpressions.Regex.IsMatch(
+                       phone,
+                       @"^\+380 \d{2} \d{3} \d{2} \d{2}$");
+        }
+
         public event PropertyChangedEventHandler? PropertyChanged;
 
         private void OnPropertyChanged(
@@ -224,6 +244,17 @@ namespace CarsharingWPF.ViewModels
             {
                 MessageBox.Show(
                     "Інший клієнт уже має таке водійське посвідчення.");
+                return;
+            }
+
+            if (!IsValidPhone(Phone))
+            {
+                MessageBox.Show(
+                    "Введіть номер телефону у форматі +380 XX XXX XX XX.",
+                    "Некоректний номер телефону",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+
                 return;
             }
 
@@ -304,9 +335,9 @@ namespace CarsharingWPF.ViewModels
             add => CommandManager.RequerySuggested += value;
             remove => CommandManager.RequerySuggested -= value;
         }
-    
-        
-    
-    
+
+
     }
+    
 }
+
